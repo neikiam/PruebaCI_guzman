@@ -1,47 +1,15 @@
-name: Python CI (diag)
-on:
-  push:
-  pull_request:
-
+name: Python CI
+on: [push]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-
-      - name: Upgrade pip and install deps
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest
-
-      - name: Show workspace
-        run: |
-          pwd
-          ls -la
-          echo "---- tree ----"
-          python - <<'PY'
-import os
-for root,dirs,files in os.walk('.', topdown=True):
-    root=root.replace('./','')
-    print(root or '.')
-    for f in files:
-        print('  -', f)
-PY
-
-      - name: Quick import check
-        run: |
-          python - <<'PY'
-import importlib, sys
-print("Python:", sys.version)
-m = importlib.import_module("app")
-print("suma(2,3) =", m.suma(2,3))
-PY
-      - name: Run tests (verbose)
-        run: python -m pytest -vv
+ build:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ - name: Instalar Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.x'
+ - name: Instalar dependencias
+ run: pip install pytest
+ - name: Ejecutar pruebas
+ run: pytest
